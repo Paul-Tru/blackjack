@@ -1,4 +1,5 @@
 import random
+import logging
 
 cards_original:list = [2, 2, 2, 2,
                        3, 3, 3, 3,
@@ -17,9 +18,11 @@ cards_original:list = [2, 2, 2, 2,
 cards:list = cards_original.copy()
 
 def dealer():
+    logging.debug("Setting up Dealer")
     dealer_num: int = 0
     dealer_over: bool = False
     dealer_cards: list = []
+
     while dealer_num < 17:
         card = random.choice(cards)
         cards.remove(card)
@@ -28,6 +31,7 @@ def dealer():
         dealer_over = False
         if dealer_num > 21:
             if card == 11 and card + dealer_num > 21:
+                logging.debug("Dealer: Got two aces")
                 dealer_num = dealer_num - 10
                 dealer_cards.remove(11)
                 dealer_cards.append(1)
@@ -37,10 +41,12 @@ def dealer():
     return dealer_num, dealer_over, dealer_cards
 
 def card():
+    logging.debug("Getting random card")
     card = random.choice(cards)
     cards.remove(card)
     return card
 
 def reset():
+    logging.debug("Resetting cards...")
     global cards, cards_original
     cards = cards_original.copy()
