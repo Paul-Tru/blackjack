@@ -17,11 +17,21 @@ cards_original:list = [2, 2, 2, 2,
 
 cards:list = cards_original.copy()
 
+dealer_cards: list = []
+dealer_num: int = 0
+
+def dealer_first_card():
+    global dealer_cards, dealer_num
+    logging.debug("Setting up Dealer's first card")
+    card_dealer = random.choice(cards)
+    dealer_cards.append(card)
+    dealer_num = dealer_num + card_dealer
+    cards.remove(card_dealer)
+
 def dealer():
+    global dealer_num, dealer_cards
     logging.debug("Setting up Dealer")
-    dealer_num: int = 0
     dealer_over: bool = False
-    dealer_cards: list = []
 
     while dealer_num < 17:
         card = random.choice(cards)

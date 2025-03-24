@@ -1,6 +1,6 @@
 import logging
 import customtkinter as ctk
-import generate_number as gen_num
+import generate_cards as gen_card
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -14,8 +14,11 @@ coins:int = 1000
 
 def setup():
     global usr_sum, usr_cards
+
+    gen_card.dealer_first_card()
+
     for _ in range(2):
-        card = gen_num.card()
+        card = gen_card.card()
         usr_sum = usr_sum + card
         usr_cards.append(card)
         logging.info(f"User: Cards: {usr_sum}: {usr_cards}")
@@ -28,7 +31,7 @@ def hit():
 
     logging.info(f"User: Hit ({usr_sum}: {usr_cards})")
 
-    card = gen_num.card()
+    card = gen_card.card()
 
     usr_sum = usr_sum + card
     curr_num_label.configure(text=usr_sum)
@@ -49,7 +52,7 @@ def hit():
 
 def stand():
     logging.info(f"User: Stand ({usr_sum}: {usr_cards})")
-    dealer_num, dealer_over, dealer_cards = gen_num.dealer()
+    dealer_num, dealer_over, dealer_cards = gen_card.dealer()
     logging.info(f"Dealer: Cards: {dealer_num}: {dealer_cards}")
     usr_cards_label.configure(text=usr_cards)
 
@@ -90,7 +93,7 @@ def replay():
     usr_sum = 0
     usr_cards = []
 
-    gen_num.reset()
+    gen_card.reset()
     setup()
 
     usr_cards_label.configure(text=usr_cards)
@@ -101,6 +104,8 @@ def replay():
 def close():
     logging.info("Closing...")
     app.destroy()
+
+fullscreen:bool = False
 
 app = ctk.CTk()
 app.title("Blackjack")
