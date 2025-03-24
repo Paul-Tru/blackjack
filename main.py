@@ -21,6 +21,7 @@ def setup():
         logging.info(f"User: Cards: {usr_sum}: {usr_cards}")
 
     curr_num_label.configure(text=usr_sum)
+    usr_cards_label.configure(text=usr_cards)
 
 def hit():
     global usr_sum, usr_cards
