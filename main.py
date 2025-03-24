@@ -110,6 +110,15 @@ fullscreen:bool = False
 app = ctk.CTk()
 app.title("Blackjack")
 
+# grid configuration for dynamic sizing
+app.grid_columnconfigure(0, weight=1)
+app.grid_columnconfigure(1, weight=1)
+app.grid_columnconfigure(2, weight=1)
+
+app.grid_rowconfigure(1, weight=1)
+app.grid_rowconfigure(2, weight=1)
+app.grid_rowconfigure(3, weight=1)
+
 coins_label = ctk.CTkLabel(app, text=f"Coins: {str(coins)}",
                            font=("Arial", 12))
 coins_label.grid(row=0, column=0,
