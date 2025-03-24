@@ -80,7 +80,16 @@ def shift_elements_right():
     for widget in app.winfo_children():
         info = widget.grid_info()
         if "column" in info:
-            widget.grid(column=info["column"] + 1)  # Spalte um 1 erhöhen
+            widget.grid(column=info["column"] + 1)
+
+def normalize_elements():
+    global shifted
+    if shifted:
+        for widget in app.winfo_children():
+            info = widget.grid_info()
+            if "column" in info:
+                widget.grid(column=info["column"] - 1)
+        shifted = False
 
 
 coins_label = ctk.CTkLabel(app, text=f"Coins: {str(coins)}",
