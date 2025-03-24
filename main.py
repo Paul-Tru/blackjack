@@ -3,21 +3,14 @@ import customtkinter as ctk
 import generate_number as gen_num
 
 logging.basicConfig(
-    filename="log.txt",
     level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] %(message)s",
     datefmt="%d-%m-%Y %H:%M:%S"
 )
-console = logging.StreamHandler()
-console.setLevel(logging.DEBUG)
-formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s",
-                              "%H:%M:%S")
-console.setFormatter(formatter)
-logging.getLogger().addHandler(console)
 
 usr_cards:list = []
 usr_sum:int = 0
-coins:int = 0
+coins:int = 1000
 
 def setup():
     global usr_sum, usr_cards
@@ -35,29 +28,29 @@ def hit():
     logging.info(f"User: Hit ({usr_sum}: {usr_cards})")
 
     card = gen_num.card()
-    if card == 11 and card + usr_sum > 21:
-        card = 1
 
     usr_sum = usr_sum + card
     curr_num_label.configure(text=usr_sum)
 
     if usr_sum > 21:
         if 11 in usr_cards:
-            logging.debug("User: Got two aces")
+            logging.debug("User: Got ace")
             usr_cards.remove(11)
             usr_cards.append(1)
             usr_sum = usr_sum - 10
-            curr_num_label.configure(usr_sum)
+            curr_num_label.configure(text=usr_sum)
         else:
             logging.info(f"User: Bust ({usr_sum}: {usr_cards})")
             end(f"Bust\n {usr_sum}")
 
     usr_cards.append(card)
+    usr_cards_label.configure(text=usr_cards)
 
 def stand():
     logging.info(f"User: Stand ({usr_sum}: {usr_cards})")
     dealer_num, dealer_over, dealer_cards = gen_num.dealer()
-    logging.info(f"Dealer: Cards: {usr_sum}: {usr_cards}")
+    logging.info(f"Dealer: Cards: {dealer_num}: {dealer_cards}")
+    usr_cards_label.configure(text=usr_cards)
 
     if dealer_over:
         logging.info(f"Dealer: Busted ({dealer_num}: {dealer_cards})")
@@ -85,6 +78,8 @@ def end(text):
     curr_num_label.configure(text=text,
                              font=("Arial", 30, "bold"))
 
+    usr_cards_label.configure(text="")
+
     hit_btn.configure(text="Replay", command=replay)
     stand_btn.configure(text="Close", command=close)
 
@@ -97,6 +92,8 @@ def replay():
     gen_num.reset()
     setup()
 
+    usr_cards_label.configure(text=usr_cards)
+
     hit_btn.configure(text="Hit", command=hit)
     stand_btn.configure(text="Stand", command=stand)
 
@@ -107,22 +104,27 @@ def close():
 app = ctk.CTk()
 app.title("Blackjack")
 
-curr_num_label = ctk.CTkLabel(app, text="0",
+coins_label = ctk.CTkLabel(app, text=f"Coins: {str(coins)}",
+                           font=("Arial", 12))
+coins_label.grid(row=0, column=0,
+                 padx=15, pady=8)
+
+curr_num_label = ctk.CTkLabel(app, text=str(usr_sum),
                               font=("Arial",50, "bold"))
-curr_num_label.grid(row=0, column=0, columnspan=3, sticky="we",
+curr_num_label.grid(row=1, column=0, columnspan=3, sticky="we",
                     padx=15, pady=8)
 
-usr_cards_label = ctk.CTkLabel(app, text="",
-                               font=("Arial", 25))
-usr_cards_label.grid(row=1, column=0, columnspan=3, sticky="we",
+usr_cards_label = ctk.CTkLabel(app, text=str(usr_cards),
+                               font=("Arial", 20))
+usr_cards_label.grid(row=2, column=0, columnspan=3, sticky="we",
                      padx=15, pady=3)
 
 hit_btn = ctk.CTkButton(app, text="Hit", command=hit)
-hit_btn.grid(row=2, column=0,
+hit_btn.grid(row=3, column=0,
              padx=15, pady=10)
 
 stand_btn = ctk.CTkButton(app, text="Stand", command=stand)
-stand_btn.grid(row=2, column=2,
+stand_btn.grid(row=3, column=2,
                padx=15, pady=10)
 
 setup()
