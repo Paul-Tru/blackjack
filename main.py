@@ -10,7 +10,7 @@ logging.basicConfig(
 
 coins = 1000
 
-def hit():
+def hit(event=None):
     result = game.hit()
 
     if isinstance(result, tuple):
@@ -21,7 +21,7 @@ def hit():
         end(result)
 
 
-def stand():
+def stand(event=None):
     winner = game.stand()
     end(winner)
 
@@ -34,7 +34,7 @@ def end(text):
     stand_btn.configure(text="Close", command=close)
 
 
-def replay():
+def replay(event=None):
     global usr_sum, usr_cards
     game.reset()
     game.setup()
@@ -62,6 +62,9 @@ app.grid_rowconfigure(1, weight=1)
 app.grid_rowconfigure(2, weight=1)
 app.grid_rowconfigure(3, weight=1)
 
+fullscreen:bool = False
+shifted:bool = False
+
 def is_fullscreen(event=None):
     global fullscreen
     found_window_state:bool = (app.winfo_width() >= app.winfo_screenwidth() and
@@ -71,7 +74,6 @@ def is_fullscreen(event=None):
         logging.debug(f"Window state changed, fullscreen: {fullscreen}")
 
         if fullscreen:
-            print(gen_card.cards)
             shift_elements_right()
 
 app.bind("<Configure>", is_fullscreen)
@@ -115,5 +117,14 @@ stand_btn.grid(row=3, column=2, padx=15, pady=10)
 usr_sum, usr_cards = game.setup()
 curr_num_label.configure(text=str(game.usr_sum))
 usr_cards_label.configure(text=", ".join(map(str, game.usr_cards)))
+
+def handle_return(event):
+    if hit_btn.cget("text") == "Hit":
+        hit()
+    else:
+        replay()
+
+app.bind("<space>", handle_return)
+app.bind("<Return>", stand)
 
 app.mainloop()
