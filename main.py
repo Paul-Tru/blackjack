@@ -124,7 +124,7 @@ def handle_return(event):
     else:
         replay()
 
-app.bind("<Return>", handle_return)
-app.bind("<space>", stand)
+app.bind("<space>", handle_return)
+app.bind("<Return>", stand)
 
 app.mainloop()
