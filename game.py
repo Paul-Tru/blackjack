@@ -19,7 +19,6 @@ cards: list = cards_original.copy()
 
 dealer_cards: list = []
 dealer_sum: int = 0
-dealer_over = False
 
 def dealer_first_card():
     global dealer_cards, dealer_sum
@@ -44,9 +43,9 @@ def dealer():
                 dealer_cards.remove(11)
                 dealer_cards.append(1)
             else:
-                dealer_over = True
                 break
-    return dealer_sum, dealer_over, dealer_cards
+
+    return dealer_sum, dealer_cards
 
 def draw_card():
     logging.debug("Getting random card")
@@ -94,12 +93,12 @@ def hit():
     return usr_sum, usr_cards
 
 def stand():
-    global dealer_sum, dealer_over, dealer_cards
+    global dealer_sum, dealer_cards
     logging.info(f"User: Stand ({usr_sum}: {usr_cards})")
     dealer()
     logging.info(f"Dealer: Cards: {dealer_sum}: {dealer_cards}")
 
-    if dealer_over:
+    if dealer_sum > 21:
         return f"Dealer busted\n\nDealer: {dealer_sum}"
     elif dealer_sum == usr_sum:
         return f"Push\n\nBoth: {usr_sum}"
