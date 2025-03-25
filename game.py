@@ -29,7 +29,7 @@ def dealer_first_card():
     cards.remove(dealer_card)
 
 def dealer():
-    global dealer_sum, dealer_cards, dealer_over
+    global dealer_sum, dealer_cards
     logging.debug("Setting up Dealer")
 
     while dealer_sum < 17:
@@ -56,8 +56,11 @@ def draw_card():
 usr_cards: list = []
 usr_sum: int = 0
 
+usr_coins: int = 1000
+usr_set_coins: int = 0
+
 def setup():
-    global usr_sum, usr_cards
+    global usr_sum, usr_cards, usr_coins
 
     dealer_first_card()
     usr_cards = []
@@ -68,10 +71,12 @@ def setup():
         usr_sum += new_card
         usr_cards.append(new_card)
 
+    usr_coins = usr_coins - usr_set_coins
+
     return usr_sum, usr_cards
 
 def hit():
-    global usr_sum, usr_cards
+    global usr_sum, usr_cards, usr_coins
 
     usr_card = draw_card()
 
@@ -93,23 +98,26 @@ def hit():
     return usr_sum, usr_cards
 
 def stand():
-    global dealer_sum, dealer_cards
+    global dealer_sum, dealer_cards, usr_coins, usr_set_coins
     logging.info(f"User: Stand ({usr_sum}: {usr_cards})")
     dealer()
     logging.info(f"Dealer: Cards: {dealer_sum}: {dealer_cards}")
 
     if dealer_sum > 21:
+        usr_coins = usr_coins + usr_set_coins*2
         return f"Dealer busted\n\nDealer: {dealer_sum}"
     elif dealer_sum == usr_sum:
+        usr_coins = usr_coins + usr_set_coins
         return f"Push\n\nBoth: {usr_sum}"
     elif dealer_sum > usr_sum:
         return f"You lost\n\nDealer: {dealer_sum}\nYou: {usr_sum}"
     else:
+        usr_coins = usr_coins + usr_set_coins*2
         return f"You won!\n\nYou: {usr_sum}\nDealer: {dealer_sum}"
 
 def reset():
     logging.debug("Resetting cards...")
-    global cards, cards_original, usr_sum, usr_cards, dealer_sum, dealer_cards
+    global cards, cards_original, usr_sum, usr_cards, usr_set_coins, dealer_sum, dealer_cards
     cards = cards_original.copy()
     usr_sum = 0
     usr_cards = []
